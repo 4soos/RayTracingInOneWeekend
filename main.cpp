@@ -2,21 +2,26 @@
 #include "src/color.h"
 #include "src/ray.h"
 
-bool hit_sphere(const point3 &center, double radius, const ray &ray) {
+double hit_sphere(const point3 &center, double radius, const ray &ray) {
     vec3 oc = ray.orign() - center;
     auto a = dot(ray.direction(), ray.direction());
     auto b = 2.0 * dot(oc, ray.direction());
     auto c = dot(oc, oc) - radius * radius;
 
     auto discriminant = b * b - 4 * a * c;
-    return (discriminant > 0);
+    if (discriminant < 0) return -1.0;
+    else return (-b - sqrt(discriminant)) / (2.0 * a);
+
 }
 
 color ray_color(const ray &ray) {
-    if (hit_sphere(point3(0, 0, -1), 0.5, ray))
-        return color(1, 0, 0);
+    auto t = hit_sphere(point3(0, 0, -1), 0.5, ray);
+    if (t > 0.0) {
+        vec3 N = unit_vector(ray.at(t) - vec3(0, 0, -1));
+        return 0.5 * color(N.x() + 1, N.y() + 1, N.z() + 1);
+    }
     vec3 unit_direction = unit_vector(ray.direction());
-    auto t = 0.5 * (unit_direction.y() + 1.0);
+    t = 0.5 * (unit_direction.y() + 1.0);
     return (1.0 - t) * color(1.0, 1.0, 1.0) + t * color(0.5, 0.7, 1.0);
 }
 
@@ -27,7 +32,7 @@ int main() {
     const int image_width = 400;
     const int image_height = static_cast<int>(image_width / aspect_ratio);
 
-    //
+    // Scene
     auto viewport_height = 2.0;
     auto viewport_width = aspect_ratio * viewport_height;
     auto focal_lenght = 1.0;
@@ -38,11 +43,9 @@ int main() {
     auto lower_left_corner = origin - horizontal / 2 - vertical / 2 - vec3(0, 0, focal_lenght);
 
     // Render
-
     std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
-
     for (int j = image_height - 1; j >= 0; --j) {
-        std::cerr << "\rScanlines remaining: " << j << ' ' << std::flush;
+        std::cerr << "\rScan lines remaining: " << j << ' ' << std::flush;
         for (int i = 0; i < image_width; ++i) {
             auto u = double(i) / (image_width - 1);
             auto v = double(j) / (image_height - 1);

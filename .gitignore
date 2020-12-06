@@ -2,3 +2,6 @@
 /out/
 image
 **/*.ppm
+
+.idea
+**/*.xml
