@@ -16,11 +16,11 @@ public:
 
     vec3(double e0, double e1, double e2) : e{e0, e1, e2} {}
 
-    double x() const { return e[0]; }
+    [[nodiscard]] double x() const { return e[0]; }
 
-    double y() const { return e[1]; }
+    [[nodiscard]] double y() const { return e[1]; }
 
-    double z() const { return e[2]; }
+    [[nodiscard]] double z() const { return e[2]; }
 
     vec3 operator-() const { return vec3(-e[0], -e[1], -e[2]); }
 
@@ -46,17 +46,33 @@ public:
         return *this *= 1 / t;
     }
 
-    double length() const {
+    [[nodiscard]] double length() const {
         return sqrt(length_squared());
     }
 
-    double length_squared() const {
+    [[nodiscard]] double length_squared() const {
         return e[0] * e[0] + e[1] * e[1] + e[2] * e[2];
+    }
+
+    inline static vec3 random() {
+        return vec3(random_double(), random_double(), random_double());
+    }
+
+    inline static vec3 random(double min, double max) {
+        return vec3(random_double(min,max), random_double(min,max), random_double(min,max));
     }
 
 public:
     double e[3];
 };
+
+vec3 random_in_unit_sphere() {
+    while (true) {
+        auto p = vec3::random(-1,1);
+        if (p.length_squared() >= 1) continue;
+        return p;
+    }
+}
 
 // Type aliases for vec3
 using point3 = vec3;   // 3D point
