@@ -5,10 +5,11 @@
 #ifndef RAYTRACINGINONEWEEKEND_RAY_H
 #define RAYTRACINGINONEWEEKEND_RAY_H
 
+#include "vec3.h"
+
 class ray {
 public:
     ray() = default;
-
     ray(const point3 &origin, const vec3 &direction) : orig(origin), dir(direction) {}
 
     [[nodiscard]] point3 orign() const { return orig; }
@@ -20,8 +21,8 @@ public:
     }
 
 public:
-    point3 orig;
-    vec3 dir;
+    point3 orig{};
+    vec3 dir{};
 };
 
 #endif //RAYTRACINGINONEWEEKEND_RAY_H

@@ -20,7 +20,7 @@ public:
 
     void clear() { objects.clear(); }
 
-    void add(shared_ptr<hittable> object) { objects.push_back(object) }
+    void add(shared_ptr<hittable> object) { objects.push_back(object); }
 
     bool hit(const ray &r,
              double t_min,
