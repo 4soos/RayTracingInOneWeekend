@@ -3,5 +3,6 @@
 image
 **/*.ppm
 
-.idea
+.idea/
 **/*.xml
+**/*.iml
